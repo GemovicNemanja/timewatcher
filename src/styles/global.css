@@ -1103,17 +1103,18 @@ h1 em {
   }
 
   .detail-shell {
+    flex-direction: column;
+  }
+
+  .detail-content {
     padding: 24px 18px;
   }
 
-  .detail-hero {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding-right: 0;
-  }
-
   .detail-media {
+    flex-basis: auto;
     height: 280px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
   }
 
   .detail-heading {
