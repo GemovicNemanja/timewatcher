@@ -757,12 +757,7 @@ h1 em {
 
 .compare-table th,
 .compare-table td {
-  border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-}
-
-.compare-table tr > :last-child {
-  border-right: 0;
 }
 
 .compare-table thead th {
