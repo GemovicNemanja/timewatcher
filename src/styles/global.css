@@ -443,9 +443,9 @@ h1 em {
   height: 34px;
   place-items: center;
   border: 1px solid var(--border-strong);
-  border-radius: 6px;
+  border-radius: 0;
   opacity: 0;
-  background: rgb(255 255 255 / 0.94);
+  background: rgb(253 252 250 / 0.94);
   color: var(--text);
   font-size: 20px;
   line-height: 1;
