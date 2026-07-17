@@ -1,0 +1,46 @@
+{
+  "name": "timewatcher",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "dev:worker": "npm run build && wrangler pages dev dist",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "check": "ASTRO_TELEMETRY_DISABLED=1 astro check && tsc -p tsconfig.functions.json --noEmit && tsc -p tsconfig.scripts.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "catalog:compile": "node --import tsx scripts/compile-catalog.ts",
+    "catalog:images": "node --import tsx scripts/build-images.ts",
+    "catalog:descriptions": "node --import tsx scripts/catalog-descriptions.ts",
+    "catalog:embeddings": "node --import tsx scripts/build-embeddings.ts",
+    "catalog:build": "npm run catalog:compile && npm run catalog:images && npm run catalog:embeddings",
+    "secrets:sync": "node --import tsx scripts/sync-secrets.ts"
+  },
+  "dependencies": {
+    "@astrojs/react": "latest",
+    "astro": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@astrojs/check": "latest",
+    "@cloudflare/workers-types": "latest",
+    "@testing-library/jest-dom": "latest",
+    "@testing-library/react": "latest",
+    "@testing-library/user-event": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "jsdom": "latest",
+    "sharp": "latest",
+    "tsx": "latest",
+    "typescript": "latest",
+    "vitest": "latest",
+    "wrangler": "latest",
+    "yaml": "latest"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

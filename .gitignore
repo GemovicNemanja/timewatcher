@@ -216,3 +216,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# TimeWatcher (the generic Python template above ignores nested lib/ folders)
+!src/lib/
+!src/lib/**
+node_modules/
+.astro/
+.wrangler/
+.dev.vars
+secrets.yaml
+secrets.yml
+catalog-cache/
+assets/source-watches/

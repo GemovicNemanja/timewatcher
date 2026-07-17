@@ -1,0 +1,424 @@
+[
+  {
+    "id": "tudor-black-bay-58-m79030n",
+    "brand": "Tudor",
+    "model": "Black Bay 58",
+    "reference": "M79030N-0001",
+    "price": {
+      "retail": 4050,
+      "preOwnedLow": 2900,
+      "preOwnedHigh": 3600
+    },
+    "specs": {
+      "caseDiameterMm": 39,
+      "thicknessMm": 11.9,
+      "lugToLugMm": 47.8,
+      "lugWidthMm": 20,
+      "movementType": "automatic",
+      "caliber": "Tudor MT5402",
+      "powerReserveH": 70,
+      "waterResistanceM": 200,
+      "crystal": "sapphire",
+      "yearReleased": 2018
+    },
+    "styleDescription": "A compact, vintage-minded dive watch with a matte black dial, warm gilt printing and hands, a dark timing bezel, and a brushed steel bracelet. It borrows the charm of a late-1950s tool watch without looking like a costume or a fragile antique. The mood is confident but quiet: recognisably sporty to an enthusiast, restrained enough to disappear under a navy jacket. Its 39mm case and relatively slim profile wear neatly on small and average wrists, while the broad bezel gives it more visual presence than a dress watch. It works especially well with denim, knitwear, military jackets, linen, and relaxed tailoring. It can handle a casual wedding or an everyday office, though the dive bezel makes it less correct with black tie. Avoid it when the brief calls for something delicate, colourful, or genuinely formal. This is the safe answer for someone who wants one handsome mechanical watch with heritage character, real water capability, and almost no flash.",
+    "image": {
+      "src": "/images/watches/tudor-black-bay-58-m79030n.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        200,
+        16,
+        601,
+        780
+      ]
+    }
+  },
+  {
+    "id": "rolex-submariner-date-126610ln",
+    "brand": "Rolex",
+    "model": "Submariner Date",
+    "reference": "126610LN",
+    "price": {
+      "retail": 10900,
+      "preOwnedLow": 12800,
+      "preOwnedHigh": 14750
+    },
+    "specs": {
+      "caseDiameterMm": 41,
+      "thicknessMm": 12.3,
+      "lugToLugMm": 47.6,
+      "lugWidthMm": 21,
+      "movementType": "automatic",
+      "caliber": "Rolex 3235",
+      "powerReserveH": 70,
+      "waterResistanceM": 300,
+      "crystal": "sapphire",
+      "yearReleased": 2020
+    },
+    "styleDescription": "The modern black Submariner is a polished version of the archetypal dive watch: glossy black dial, crisp white luminous markers, black ceramic bezel, cyclops date window, and a solid steel Oyster bracelet. It projects competence, expense, and instant recognition rather than obscurity. The design is exceptionally balanced, but its cultural visibility means it never feels anonymous; people who know watches will notice it. Although nominally 41mm, the short lug span makes it sit securely on many average wrists, with enough weight and shine to remain present. It is ideal with weekend clothes, business casual, travel, and nearly any active setting, and it is tough enough to be a true daily watch. It can work with a suit in modern offices, but it is not an understated wedding choice and is too sporty for strict evening dress. Choose it when you want the definitive luxury tool watch and do not mind the status signal. Skip it when discretion, affordability, or a vintage cream-dial mood matters more than iconography.",
+    "image": {
+      "src": "/images/watches/rolex-submariner-date-126610ln.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        200,
+        16,
+        601,
+        780
+      ]
+    }
+  },
+  {
+    "id": "omega-seamaster-diver-300m-21030422001001",
+    "brand": "Omega",
+    "model": "Seamaster Diver 300M",
+    "reference": "210.30.42.20.01.001",
+    "price": {
+      "retail": 5900,
+      "preOwnedLow": 3800,
+      "preOwnedHigh": 4700
+    },
+    "specs": {
+      "caseDiameterMm": 42,
+      "thicknessMm": 13.6,
+      "lugToLugMm": 49.9,
+      "lugWidthMm": 20,
+      "movementType": "automatic",
+      "caliber": "Omega 8800",
+      "powerReserveH": 55,
+      "waterResistanceM": 300,
+      "crystal": "sapphire",
+      "yearReleased": 2018
+    },
+    "styleDescription": "A bright, technical dive watch with a white ceramic wave dial, skeletonised hands, dark bezel, scalloped edge, and an articulated steel bracelet. It feels more graphic and contemporary than a vintage diver; the high-contrast dial and unusual handset make it unmistakable from across a room. The mood is capable, energetic, and faintly futuristic, with just enough polished metal to read as luxury. At 42mm with a broad lug span and substantial thickness, it wears best on medium or larger wrists and will announce itself rather than slip away. It suits sportswear, travel, summer clothes, a wetsuit, and relaxed business wardrobes. The white dial can look sharp with tailoring, but the helium valve and chunky bracelet keep it firmly out of traditional dress-watch territory. It is an excellent choice for someone asking for rugged water resistance with more personality than a black tool watch. It is the wrong answer for a tiny wrist, a discreet formal occasion, or anyone who wants the soft warmth of a vintage field watch.",
+    "image": {
+      "src": "/images/watches/omega-seamaster-diver-300m-21030422001001.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        200,
+        16,
+        601,
+        780
+      ]
+    }
+  },
+  {
+    "id": "hamilton-khaki-field-mechanical-h69439931",
+    "brand": "Hamilton",
+    "model": "Khaki Field Mechanical 38",
+    "reference": "H69439931",
+    "price": {
+      "retail": 625,
+      "preOwnedLow": 390,
+      "preOwnedHigh": 520
+    },
+    "specs": {
+      "caseDiameterMm": 38,
+      "thicknessMm": 9.5,
+      "lugToLugMm": 47,
+      "lugWidthMm": 20,
+      "movementType": "hand-wound",
+      "caliber": "Hamilton H-50",
+      "powerReserveH": 80,
+      "waterResistanceM": 50,
+      "crystal": "sapphire",
+      "yearReleased": 2017
+    },
+    "styleDescription": "A deliberately simple military field watch with a matte black dial, highly legible cream-coloured Arabic numerals, slim syringe hands, a blasted steel case, and a practical green textile strap. It looks like useful equipment rather than jewellery. The hand-wound movement adds a small daily ritual and keeps the case notably thin, while the long lugs lend a little more wrist presence than the 38mm diameter suggests. The mood is honest, outdoorsy, vintage, and unpretentious. It pairs naturally with denim, boots, chore coats, flannel, fatigues, and casual weekend clothing. On a brown leather strap it can stretch to a relaxed office or rustic wedding, but the military dial is still too utilitarian for formal tailoring. It is especially strong for someone asking for a 1940s field-watch feeling, a compact mechanical watch, or excellent value under four figures. It is less suitable for swimming, polished business dress, or anyone who dislikes winding a watch by hand. Nothing about it is flashy, and that restraint is the point.",
+    "image": {
+      "src": "/images/watches/hamilton-khaki-field-mechanical-h69439931.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        200,
+        16,
+        601,
+        780
+      ]
+    }
+  },
+  {
+    "id": "cartier-tank-must-large-wsta0041",
+    "brand": "Cartier",
+    "model": "Tank Must Large",
+    "reference": "WSTA0041",
+    "price": {
+      "retail": 3460,
+      "preOwnedLow": 2450,
+      "preOwnedHigh": 3000
+    },
+    "specs": {
+      "caseDiameterMm": 33.7,
+      "caseWidthMm": 25.5,
+      "thicknessMm": 6.6,
+      "lugToLugMm": 33.7,
+      "lugWidthMm": 19,
+      "movementType": "quartz",
+      "caliber": "Cartier 157",
+      "powerReserveH": null,
+      "waterResistanceM": 30,
+      "crystal": "sapphire",
+      "yearReleased": 2021
+    },
+    "styleDescription": "The Tank is a slim rectangular dress watch defined by ivory dial space, black Roman numerals, blued sword hands, a beaded crown, and a black leather strap. Its shape is architectural and immediately elegant without relying on precious metal or mechanical theatre. The quartz movement keeps it thin, accurate, and easy to live with; there is no apology required for that practicality. It projects taste, culture, and restraint rather than technical toughness. The narrow 25.5mm width is intentionally small by sports-watch standards, yet the long brancards give it enough graphic presence on almost any wrist. It is exceptional with a suit, a dinner jacket, a crisp shirt, knitwear, or minimalist womenswear, and it is probably the strongest wedding choice in the catalog. It does not belong in the pool, on a rough hike, or with a request for a chunky survival object. Choose it for understated formality and timeless design. Avoid it if water resistance, luminous visibility, or an obviously mechanical experience is central to the brief.",
+    "image": {
+      "src": "/images/watches/cartier-tank-must-large-wsta0041.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        259,
+        16,
+        542,
+        780
+      ]
+    }
+  },
+  {
+    "id": "seiko-prospex-alpinist-spb121",
+    "brand": "Seiko",
+    "model": "Prospex Alpinist",
+    "reference": "SPB121",
+    "price": {
+      "retail": 725,
+      "preOwnedLow": 480,
+      "preOwnedHigh": 620
+    },
+    "specs": {
+      "caseDiameterMm": 39.5,
+      "thicknessMm": 13.2,
+      "lugToLugMm": 46.4,
+      "lugWidthMm": 20,
+      "movementType": "automatic",
+      "caliber": "Seiko 6R35",
+      "powerReserveH": 70,
+      "waterResistanceM": 200,
+      "crystal": "sapphire",
+      "yearReleased": 2020
+    },
+    "styleDescription": "A characterful Japanese adventure watch with a deep sunburst green dial, gold-tone cathedral hands and markers, an internal compass ring, polished steel case, and brown leather strap. It mixes mountaineering roots with a slightly ornate, almost storybook quality. The green and gold palette feels warm, vintage, and conspicuous in a charming way; this is not the watch for someone asking for pure minimalism. Its compact lug-to-lug makes the 39.5mm case manageable on many wrists, although the case is thicker and more rounded than the diameter first suggests. It looks excellent with earth tones, tweed, denim, boots, corduroy, and outdoor clothing, and can bring personality to business casual. Despite serious water resistance, the supplied leather strap should be changed before swimming. It works for an adventurous everyday watch under $1,000 and for someone who wants colour without a modern fashion-watch look. It is less convincing with strict formalwear, a monochrome minimalist wardrobe, or a brief that says nothing flashy.",
+    "image": {
+      "src": "/images/watches/seiko-prospex-alpinist-spb121.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        200,
+        16,
+        601,
+        780
+      ]
+    }
+  },
+  {
+    "id": "casio-g-shock-dw5600ue-1",
+    "brand": "Casio",
+    "model": "G-Shock DW-5600",
+    "reference": "DW5600UE-1",
+    "price": {
+      "retail": 99,
+      "preOwnedLow": 45,
+      "preOwnedHigh": 75
+    },
+    "specs": {
+      "caseDiameterMm": 42.8,
+      "caseWidthMm": 42.8,
+      "thicknessMm": 13.4,
+      "lugToLugMm": 48.9,
+      "lugWidthMm": 16,
+      "movementType": "quartz",
+      "caliber": "Casio 3525",
+      "powerReserveH": null,
+      "waterResistanceM": 200,
+      "crystal": "mineral",
+      "yearReleased": 2023
+    },
+    "styleDescription": "The square G-Shock is a black resin protective shell built around a compact digital display, with exposed button labels, ridged strap, and almost no decorative polish. It looks like durable equipment from a late-1980s control room. The mood is tough, functional, youthful, and confidently inexpensive. Its quoted width sounds large, but the short integrated shape hugs the wrist better than many round watches of similar dimensions; thickness and blocky guards still make it feel substantial. This is the obvious companion for manual work, gym sessions, travel, hiking, surfing, festivals, and any situation where damage would be annoying. It fits workwear and streetwear particularly well. It can create an intentional high-low contrast with tailoring, but it is not a conventional wedding or office-formal watch. Choose it when the query says chunky, rugged, indestructible, accurate, or under $150. Skip it when the user wants artisanal mechanics, a thin cuff-friendly profile, or traditional elegance. Its lack of preciousness is precisely what makes it so useful.",
+    "image": {
+      "src": "/images/watches/casio-g-shock-dw5600ue-1.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        194,
+        16,
+        606,
+        780
+      ]
+    }
+  },
+  {
+    "id": "nomos-tangente-38-164",
+    "brand": "Nomos Glashütte",
+    "model": "Tangente 38",
+    "reference": "164",
+    "price": {
+      "retail": 2500,
+      "preOwnedLow": 1350,
+      "preOwnedHigh": 1850
+    },
+    "specs": {
+      "caseDiameterMm": 37.5,
+      "thicknessMm": 6.7,
+      "lugToLugMm": 47.7,
+      "lugWidthMm": 19,
+      "movementType": "hand-wound",
+      "caliber": "Nomos Alpha",
+      "powerReserveH": 43,
+      "waterResistanceM": 30,
+      "crystal": "sapphire",
+      "yearReleased": 2005
+    },
+    "styleDescription": "A remarkably thin German dress watch with a warm silver-white dial, crisp black typography, tiny blue hands, a small-seconds subdial, wire-like lugs, and a plain black leather strap. Its Bauhaus vocabulary is clean without becoming sterile; the hand-wound movement and visible proportions keep it human. It projects intelligence, restraint, and quiet design awareness rather than conventional luxury. The 37.5mm diameter is modest, but the unusually long straight lugs make it wear larger across the wrist, so lug-to-lug deserves attention on a very small wrist. At under seven millimetres thick it vanishes under a shirt cuff. It is superb for weddings, creative offices, dinners, galleries, and minimal tailoring, and it also lifts a simple knit and jeans. Low water resistance and the delicate strap make it a poor companion for sport, swimming, or careless travel. Choose it when understated, thin, cream-dial, or design-led appears in the query. Avoid it when ruggedness, automatic convenience, or heavy visual presence is required.",
+    "image": {
+      "src": "/images/watches/nomos-tangente-38-164.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        200,
+        16,
+        601,
+        780
+      ]
+    }
+  },
+  {
+    "id": "longines-spirit-37-l34104636",
+    "brand": "Longines",
+    "model": "Spirit 37",
+    "reference": "L3.410.4.63.6",
+    "price": {
+      "retail": 2650,
+      "preOwnedLow": 1550,
+      "preOwnedHigh": 2050
+    },
+    "specs": {
+      "caseDiameterMm": 37,
+      "thicknessMm": 11.7,
+      "lugToLugMm": 45,
+      "lugWidthMm": 19,
+      "movementType": "automatic",
+      "caliber": "Longines L888.4",
+      "powerReserveH": 72,
+      "waterResistanceM": 100,
+      "crystal": "sapphire",
+      "yearReleased": 2022
+    },
+    "styleDescription": "A compact aviation-inspired watch with a warm champagne dial, applied Arabic numerals, diamond-shaped hands, a small date, polished bezel, and sturdy steel bracelet. Its styling references early pilots' instruments but the finishing is much more refined than true military equipment. The result feels versatile, mature, and quietly luxurious rather than rugged for ruggedness' sake. At 37mm with controlled thickness and a short lug span, it is especially friendly to smaller wrists and sits cleanly beneath most cuffs. The pale dial and polished details pair easily with navy or grey tailoring, oxford shirts, suede, knitwear, and smart casual clothes; on leather it can handle a relaxed wedding with ease. Strong everyday water resistance means it need not be treated like a fragile dress watch. It is an excellent compound answer for someone wanting vintage warmth, a small fit, and practical daily durability. It is less apt for a request centred on a true dive bezel, extreme toughness, or stark modern minimalism, and its five-star dial details are busier than the simplest field watches.",
+    "image": {
+      "src": "/images/watches/longines-spirit-37-l34104636.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        200,
+        16,
+        601,
+        780
+      ]
+    }
+  },
+  {
+    "id": "grand-seiko-snowflake-sbga211",
+    "brand": "Grand Seiko",
+    "model": "Snowflake",
+    "reference": "SBGA211",
+    "price": {
+      "retail": 6200,
+      "preOwnedLow": 3900,
+      "preOwnedHigh": 4900
+    },
+    "specs": {
+      "caseDiameterMm": 41,
+      "thicknessMm": 12.5,
+      "lugToLugMm": 49,
+      "lugWidthMm": 20,
+      "movementType": "spring-drive",
+      "caliber": "Grand Seiko 9R65",
+      "powerReserveH": 72,
+      "waterResistanceM": 100,
+      "crystal": "sapphire",
+      "yearReleased": 2017
+    },
+    "styleDescription": "The Snowflake combines a finely textured white dial, razor-polished steel-like titanium facets, slim baton markers, a heat-blue seconds hand, power-reserve indicator, and a lightweight bracelet. The dial resembles wind-swept snow rather than a flat white surface, giving it quiet detail that rewards close viewing. Its smoothly gliding Spring Drive seconds hand adds a distinctly serene, technical character. The mood is thoughtful, precise, and refined, with far less overt status signalling than many watches at the same price. At 41mm and nearly 49mm lug-to-lug it has real presence, but titanium keeps the physical weight surprisingly low; small wrists should still try it first. It works with business clothing, a wedding suit, smart casual layers, and contemplative everyday wear, while 100m resistance makes it more practical than a pure dress watch. Choose it for subtle craftsmanship, a bright textured dial, or an unusual high-accuracy mechanical experience. Avoid it when compact dimensions, a simple two-hand layout, or a genuinely inexpensive tool watch is the priority.",
+    "image": {
+      "src": "/images/watches/grand-seiko-snowflake-sbga211.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        200,
+        16,
+        601,
+        780
+      ]
+    }
+  },
+  {
+    "id": "tissot-prx-powermatic-80-t1374071105100",
+    "brand": "Tissot",
+    "model": "PRX Powermatic 80",
+    "reference": "T137.407.11.051.00",
+    "price": {
+      "retail": 775,
+      "preOwnedLow": 430,
+      "preOwnedHigh": 600
+    },
+    "specs": {
+      "caseDiameterMm": 40,
+      "thicknessMm": 10.9,
+      "lugToLugMm": 44,
+      "lugWidthMm": 12,
+      "movementType": "automatic",
+      "caliber": "Powermatic 80.111",
+      "powerReserveH": 80,
+      "waterResistanceM": 100,
+      "crystal": "sapphire",
+      "yearReleased": 2021
+    },
+    "styleDescription": "A sharp 1970s-inspired sports watch with an angular tonneau case, black waffle-textured dial, simple baton hands, broad polished bezel, and a fully integrated steel bracelet. The geometry and bracelet do most of the talking; it feels fashionable and architectural rather than like traditional round watchmaking. Its mood is confident, youthful, and slightly flashy when the polished links catch light, but the black dial keeps this version relatively restrained. The case is thin and the first bracelet links turn down quickly, though the broad integrated form can still occupy a small wrist. It thrives with open-collar shirts, knit polos, contemporary suits, sneakers, and evening social settings. It can be a strong affordable wedding watch for someone who wants retro personality rather than formal delicacy. Practical water resistance and a long reserve suit everyday use. Choose it for value, integrated-bracelet style, or a sleek automatic under $1,000. Skip it for strap-swapping, tiny classic proportions, or a rugged field-watch brief; the proprietary narrow connection limits ordinary replacement straps.",
+    "image": {
+      "src": "/images/watches/tissot-prx-powermatic-80-t1374071105100.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        236,
+        16,
+        564,
+        779
+      ]
+    }
+  },
+  {
+    "id": "sinn-556-i",
+    "brand": "Sinn",
+    "model": "556 I",
+    "reference": "556.010",
+    "price": {
+      "retail": 1740,
+      "preOwnedLow": 1050,
+      "preOwnedHigh": 1350
+    },
+    "specs": {
+      "caseDiameterMm": 38.5,
+      "thicknessMm": 11,
+      "lugToLugMm": 45.5,
+      "lugWidthMm": 20,
+      "movementType": "automatic",
+      "caliber": "Sellita SW200-1",
+      "powerReserveH": 38,
+      "waterResistanceM": 200,
+      "crystal": "sapphire",
+      "yearReleased": 2007
+    },
+    "styleDescription": "A stripped-back German pilot-style watch with an inky black dial, four large white markers, compact date window, short white hands, a brushed steel case, and a fine-link bracelet. There is almost no ornament: no rotating bezel, no colourful flourish, and very little reflective polish. The mood is purposeful, modern, and discreet, like a cockpit instrument edited for civilian daily wear. Its 38.5mm case, short lugs, and moderate thickness make it an easy fit on small through medium wrists, while 200m resistance gives it hidden toughness. It pairs naturally with workwear, technical outerwear, denim, monochrome office clothing, and a simple blazer. On leather it becomes quiet enough for a casual wedding, although it remains an instrument watch rather than formal jewellery. Choose it when the request combines nothing flashy, rugged water capability, compact sizing, and clean design. It is less suitable for someone seeking visible heritage warmth, a decorative dial, a very long weekend-proof reserve, or a famous luxury badge.",
+    "image": {
+      "src": "/images/watches/sinn-556-i.avif",
+      "w": 800,
+      "h": 800,
+      "alphaBbox": [
+        200,
+        16,
+        601,
+        780
+      ]
+    }
+  }
+]

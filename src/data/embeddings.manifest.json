@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "provider": "local-hash",
+  "model": "local-hash-v1",
+  "dimensions": 768,
+  "count": 12,
+  "ids": [
+    "tudor-black-bay-58-m79030n",
+    "rolex-submariner-date-126610ln",
+    "omega-seamaster-diver-300m-21030422001001",
+    "hamilton-khaki-field-mechanical-h69439931",
+    "cartier-tank-must-large-wsta0041",
+    "seiko-prospex-alpinist-spb121",
+    "casio-g-shock-dw5600ue-1",
+    "nomos-tangente-38-164",
+    "longines-spirit-37-l34104636",
+    "grand-seiko-snowflake-sbga211",
+    "tissot-prx-powermatic-80-t1374071105100",
+    "sinn-556-i"
+  ],
+  "contentHash": "e8b67bd4108e1a29e9944b9f1b0abb204b443863f707094bc9185e16c65bb74e",
+  "generatedAt": "2026-07-17T15:04:56.311Z",
+  "quantization": "symmetric-int8"
+}

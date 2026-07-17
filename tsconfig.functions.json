@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "WebWorker"],
+    "types": ["@cloudflare/workers-types"],
+    "noEmit": true
+  },
+  "include": ["functions/**/*.ts", "src/lib/**/*.ts", "src/types.ts"],
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
+}
