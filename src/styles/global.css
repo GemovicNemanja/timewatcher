@@ -670,15 +670,18 @@ h1 em {
 }
 
 .detail-specs dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 40px;
   margin: 12px 0 0;
 }
 
 .detail-spec-row {
   display: grid;
-  grid-template-columns: 1fr 1.3fr;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 20px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 6px 0;
+  border-bottom: 0;
   font-size: 13px;
 }
 
