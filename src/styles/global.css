@@ -339,15 +339,15 @@ h1 em {
   position: relative;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg);
+  border-top: 1px solid var(--text);
+  border-radius: 0;
+  background: transparent;
   transition: border-color 0.15s ease;
 }
 
 .watch-card:hover,
 .watch-card:focus-within {
-  border-color: var(--border-strong);
+  border-top-color: var(--text-2);
 }
 
 .card-detail-target {
