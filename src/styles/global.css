@@ -385,27 +385,28 @@ h1 em {
 
 .card-copy {
   display: flex;
-  min-height: 186px;
+  min-height: 150px;
   flex-direction: column;
   align-items: start;
-  padding: 16px;
-  border-top: 1px solid var(--border);
+  padding: 16px 0 20px;
+  border-top: 0;
 }
 
 .watch-brand {
   color: var(--text-3);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
   line-height: 1.4;
   text-transform: uppercase;
 }
 
 .watch-model {
-  margin-top: 3px;
-  font-size: 17px;
-  font-weight: 620;
-  line-height: 1.35;
+  margin-top: 5px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.3;
 }
 
 .watch-summary {
