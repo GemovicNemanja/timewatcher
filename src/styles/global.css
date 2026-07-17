@@ -641,11 +641,15 @@ h1 em {
 }
 
 .style-description {
-  max-width: 62ch;
-  margin: 25px 0 28px;
+  display: -webkit-box;
+  max-width: 54ch;
+  margin: 24px 0;
+  overflow: hidden;
   color: var(--text-2);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.7;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .detail-specs h3 {
