@@ -366,7 +366,8 @@ h1 em {
 .card-media {
   position: relative;
   display: block;
-  height: 360px;
+  height: 320px;
+  margin-top: 1px;
   overflow: hidden;
   background: var(--bg);
 }
