@@ -74,7 +74,7 @@ export function CompareDialog({ open, watches, catalog, onClose, onAdd, onRemove
                       <span className="watch-brand">{watch.brand}</span>
                       <strong>{watch.model}</strong>
                       <button type="button" onClick={() => onRemove(watch.id)} aria-label={`Remove ${watch.brand} ${watch.model}`}>
-                        Remove ×
+                        Remove
                       </button>
                     </div>
                   </th>
