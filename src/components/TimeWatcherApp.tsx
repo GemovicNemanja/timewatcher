@@ -174,7 +174,14 @@ export default function TimeWatcherApp() {
   return (
     <>
       <section className="search-section" aria-labelledby="page-title">
-        <p className="eyebrow">Semantic watch finder</p>
+        <a className="search-wordmark" href="/" aria-label="TimeWatcher home">
+          <svg aria-hidden="true" viewBox="0 0 32 32" width="28" height="28">
+            <circle cx="16" cy="16" r="11" fill="none" stroke="currentColor" strokeWidth="2" />
+            <path d="M12 2h8l1 4H11l1-4Zm0 28h8l1-4H11l1 4Z" fill="currentColor" />
+            <path d="M16 9v7l5 3" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+          </svg>
+          <span>TimeWatcher</span>
+        </a>
         <h1 id="page-title">Find a watch that <em>feels right.</em></h1>
         <form
           id="search"

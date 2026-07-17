@@ -8,6 +8,7 @@ describe("TimeWatcher application", () => {
 
   it("shows exactly four initial answers", () => {
     render(<TimeWatcherApp />);
+    expect(screen.getByRole("link", { name: "TimeWatcher home" })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: /view details for/i })).toHaveLength(4);
   });
 
@@ -28,7 +29,16 @@ describe("TimeWatcher application", () => {
     await user.click(screen.getAllByRole("button", { name: /view details for/i })[0]);
 
     expect(screen.getByRole("heading", { name: "Royal Oak" })).toBeInTheDocument();
+    expect(screen.queryByText("All official specifications")).not.toBeInTheDocument();
     await waitFor(() => expect(document.querySelector(".detail-modal")).toHaveAttribute("open"));
+
+    await user.click(screen.getByRole("button", { name: "More info" }));
+    expect(screen.getByRole("heading", { name: "More information" })).toBeInTheDocument();
+    expect(screen.getByText("All official specifications")).toBeInTheDocument();
+    await waitFor(() => expect(document.querySelector(".more-info-modal")).toHaveAttribute("open"));
+
+    await user.click(screen.getByRole("button", { name: "Close more information" }));
+    await waitFor(() => expect(screen.queryByText("All official specifications")).not.toBeInTheDocument());
   });
 
   it("runs a suggested search and falls back to four local matches when the API is unavailable", async () => {
