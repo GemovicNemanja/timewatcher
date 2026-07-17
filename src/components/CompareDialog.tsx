@@ -62,7 +62,6 @@ export function CompareDialog({ open, watches, catalog, onClose, onAdd, onRemove
             ×
           </button>
         </div>
-        <p className="compare-intro">Numbers line up. The ⓘ notes explain what they mean on a wrist.</p>
         <div className="compare-scroll">
           <table className="compare-table" style={{ "--compare-columns": tableColumns } as React.CSSProperties}>
             <thead>
@@ -75,7 +74,7 @@ export function CompareDialog({ open, watches, catalog, onClose, onAdd, onRemove
                       <span className="watch-brand">{watch.brand}</span>
                       <strong>{watch.model}</strong>
                       <button type="button" onClick={() => onRemove(watch.id)} aria-label={`Remove ${watch.brand} ${watch.model}`}>
-                        Remove ×
+                        Remove
                       </button>
                     </div>
                   </th>

@@ -46,10 +46,10 @@ export function DetailDialog({ watch, selected, onClose, onToggleCompare }: Prop
           <button className="modal-close" type="button" aria-label="Close details" onClick={() => ref.current?.close()}>
             ×
           </button>
-          <div className="detail-hero">
-            <div className="detail-media">
-              <WatchImage watch={watch} loading="eager" />
-            </div>
+          <div className="detail-media">
+            <WatchImage watch={watch} loading="eager" />
+          </div>
+          <div className="detail-content">
             <div className="detail-heading">
               <span className="watch-brand">{watch.brand}</span>
               <h2 id="detail-title">{watch.model}</h2>
@@ -59,48 +59,48 @@ export function DetailDialog({ watch, selected, onClose, onToggleCompare }: Prop
                 <p><strong>{preOwnedPrice}</strong><span>pre-owned</span></p>
               </div>
             </div>
-          </div>
-          <p className="style-description">{watch.styleDescription}</p>
-          <section className="detail-specs" aria-labelledby="specification-title">
-            <h3 id="specification-title"><span>Specifications</span></h3>
-            <dl>
-              {specRows.map((definition) => (
-                <div className="detail-spec-row" key={definition.key}>
-                  <dt>{definition.label}</dt>
-                  <dd className="numeric">{definition.format(watch)}</dd>
-                </div>
-              ))}
-              <div className="detail-spec-row">
-                <dt>Released</dt>
-                <dd className="numeric">{watch.specs.yearReleased ?? "—"}</dd>
-              </div>
-            </dl>
-          </section>
-          {watch.sourceSpecifications && watch.sourceSpecifications.length > 0 ? (
-            <section className="detail-specs source-specs" aria-labelledby="source-specification-title">
-              <h3 id="source-specification-title"><span>All official specifications</span></h3>
+            <p className="style-description">{watch.styleDescription}</p>
+            <section className="detail-specs" aria-labelledby="specification-title">
+              <h3 id="specification-title"><span>Specifications</span></h3>
               <dl>
-                {watch.sourceSpecifications.map((specification) => (
-                  <div className="detail-spec-row" key={`${specification.name}:${specification.value}`}>
-                    <dt>{specification.name}</dt>
-                    <dd>{specification.value}</dd>
+                {specRows.map((definition) => (
+                  <div className="detail-spec-row" key={definition.key}>
+                    <dt>{definition.label}</dt>
+                    <dd className="numeric">{definition.format(watch)}</dd>
                   </div>
                 ))}
+                <div className="detail-spec-row">
+                  <dt>Released</dt>
+                  <dd className="numeric">{watch.specs.yearReleased ?? "—"}</dd>
+                </div>
               </dl>
-              {watch.provenance ? (
-                <p className="source-note">
-                  Data and imagery retrieved {new Date(watch.provenance.retrievedAt).toLocaleDateString("en-US")} ·{" "}
-                  <a href={watch.provenance.catalogUrl} target="_blank" rel="noreferrer">View source ↗</a>
-                  {watch.provenance.manufacturerUrl ? (
-                    <> · <a href={watch.provenance.manufacturerUrl} target="_blank" rel="noreferrer">Manufacturer ↗</a></>
-                  ) : null}
-                </p>
-              ) : null}
             </section>
-          ) : null}
-          <button className="primary-button detail-compare" type="button" onClick={() => onToggleCompare(watch)}>
-            {selected ? "✓ Added to compare" : "+ Add to compare"}
-          </button>
+            {watch.sourceSpecifications && watch.sourceSpecifications.length > 0 ? (
+              <section className="detail-specs source-specs" aria-labelledby="source-specification-title">
+                <h3 id="source-specification-title"><span>All official specifications</span></h3>
+                <dl>
+                  {watch.sourceSpecifications.map((specification) => (
+                    <div className="detail-spec-row" key={`${specification.name}:${specification.value}`}>
+                      <dt>{specification.name}</dt>
+                      <dd>{specification.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+                {watch.provenance ? (
+                  <p className="source-note">
+                    Data and imagery retrieved {new Date(watch.provenance.retrievedAt).toLocaleDateString("en-US")} ·{" "}
+                    <a href={watch.provenance.catalogUrl} target="_blank" rel="noreferrer">View source ↗</a>
+                    {watch.provenance.manufacturerUrl ? (
+                      <> · <a href={watch.provenance.manufacturerUrl} target="_blank" rel="noreferrer">Manufacturer ↗</a></>
+                    ) : null}
+                  </p>
+                ) : null}
+              </section>
+            ) : null}
+            <button className="primary-button detail-compare" type="button" onClick={() => onToggleCompare(watch)}>
+              {selected ? "✓ Added to compare" : "+ Add to compare"}
+            </button>
+          </div>
         </div>
       ) : null}
     </dialog>
