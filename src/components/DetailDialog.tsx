@@ -54,26 +54,26 @@ export function DetailDialog({ watch, selected, onClose, onToggleCompare }: Prop
                 <p><strong>{formatMoney(watch.price.preOwnedLow)} – {formatMoney(watch.price.preOwnedHigh)}</strong><span>pre-owned</span></p>
               </div>
             </div>
-          </div>
-          <p className="style-description">{watch.styleDescription}</p>
-          <section className="detail-specs" aria-labelledby="specification-title">
-            <h3 id="specification-title"><span>Specifications</span></h3>
-            <dl>
-              {specRows.map((definition) => (
-                <div className="detail-spec-row" key={definition.key}>
-                  <dt>{definition.label}</dt>
-                  <dd className="numeric">{definition.format(watch)}</dd>
+            <p className="style-description">{watch.styleDescription}</p>
+            <section className="detail-specs" aria-labelledby="specification-title">
+              <h3 id="specification-title"><span>Specifications</span></h3>
+              <dl>
+                {specRows.map((definition) => (
+                  <div className="detail-spec-row" key={definition.key}>
+                    <dt>{definition.label}</dt>
+                    <dd className="numeric">{definition.format(watch)}</dd>
+                  </div>
+                ))}
+                <div className="detail-spec-row">
+                  <dt>Released</dt>
+                  <dd className="numeric">{watch.specs.yearReleased}</dd>
                 </div>
-              ))}
-              <div className="detail-spec-row">
-                <dt>Released</dt>
-                <dd className="numeric">{watch.specs.yearReleased}</dd>
-              </div>
-            </dl>
-          </section>
-          <button className="primary-button detail-compare" type="button" onClick={() => onToggleCompare(watch)}>
-            {selected ? "✓ Added to compare" : "+ Add to compare"}
-          </button>
+              </dl>
+            </section>
+            <button className="primary-button detail-compare" type="button" onClick={() => onToggleCompare(watch)}>
+              {selected ? "✓ Added to compare" : "+ Add to compare"}
+            </button>
+          </div>
         </div>
       ) : null}
     </dialog>
