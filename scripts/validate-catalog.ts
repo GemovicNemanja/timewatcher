@@ -17,8 +17,20 @@ const publicDirectory = resolve(root, "public");
 const catalog = JSON.parse(await readFile(catalogPath, "utf8")) as Watch[];
 const provenance = JSON.parse(await readFile(provenancePath, "utf8")) as CatalogProvenance;
 const inspections = new Map<string, LocalImageInspection>();
+const rerankImageIssues: string[] = [];
 
 for (const watch of catalog) {
+  const rerankPath = resolve(publicDirectory, "images", "rerank", `${watch.id}.webp`);
+  const rerankBytes = await readFile(rerankPath).catch(() => null);
+  if (!rerankBytes) {
+    rerankImageIssues.push(`${watch.id}: missing Claude vision thumbnail`);
+  } else {
+    const rerankMetadata = await sharp(rerankBytes).metadata();
+    if (rerankMetadata.format !== "webp" || rerankMetadata.width !== 280 || rerankMetadata.height !== 280) {
+      rerankImageIssues.push(`${watch.id}: vision thumbnail must be a 280×280 WebP`);
+    }
+  }
+
   const localPath = resolve(publicDirectory, watch.image.src.replace(/^\/+/, ""));
   const relativePath = relative(publicDirectory, localPath);
   if (relativePath.startsWith(`..${sep}`) || relativePath === "..") {
@@ -65,12 +77,13 @@ for (const watch of catalog) {
 const minimumWatches = Number.parseInt(process.env.CATALOG_MIN_WATCHES ?? "300", 10);
 const issues = validateCatalogQuality(catalog, provenance, inspections, { minimumWatches });
 
-if (issues.length > 0) {
+if (issues.length > 0 || rerankImageIssues.length > 0) {
   for (const item of issues) {
     const location = [item.watchId, item.field].filter(Boolean).join(" · ");
     console.error(`${item.code}${location ? ` [${location}]` : ""}: ${item.message}`);
   }
-  console.error(`Catalog validation failed with ${issues.length} issue(s).`);
+  for (const issue of rerankImageIssues) console.error(`RERANK_IMAGE: ${issue}`);
+  console.error(`Catalog validation failed with ${issues.length + rerankImageIssues.length} issue(s).`);
   process.exitCode = 1;
 } else {
   console.log(`Validated ${catalog.length} watches: complete facts, cited sources, and real local photos.`);

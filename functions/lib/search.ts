@@ -5,18 +5,27 @@ import { base64ToBytes, cosineWithQuantized, decodeEmbeddingFile } from "../../s
 import { diversifyRanked } from "../../src/lib/diversity";
 import { formatMoney, formatMovement } from "../../src/lib/format";
 import { localEmbedding } from "../../src/lib/local-embedding";
+import {
+  dialColorConstraintTier,
+  dialColorEvidence,
+  extractVisualQueryConstraints,
+  watchSearchDocument,
+  type DialColorFamily
+} from "../../src/lib/visual-search";
 import type { SearchResult, SearchStreamEvent, Watch } from "../../src/types";
 import {
   anthropicTextDeltas,
-  candidatePayload,
   RERANK_SYSTEM_PROMPT,
+  rerankUserContent,
   ResultObjectParser,
-  structuredOutputFormat
+  structuredOutputFormat,
+  type CandidateImage
 } from "./rerank";
 
 export type SearchEnv = {
   ANTHROPIC_API_KEY?: string;
   ANTHROPIC_MODEL?: string;
+  ASSETS?: { fetch(input: Request): Promise<Response> };
   OPENAI_API_KEY?: string;
   OPENAI_EMBEDDING_MODEL?: string;
   SEARCH_CACHE_TTL_SECONDS?: string;
@@ -28,10 +37,12 @@ type QueryConstraints = {
   maxRetail: number | null;
   maxCaseMm: number | null;
   movementType: Watch["specs"]["movementType"] | null;
+  dialColors: DialColorFamily[];
 };
 
 const catalog = catalogJson as Watch[];
 const watchById = new Map(catalog.map((watch) => [watch.id, watch]));
+const searchDocumentById = new Map(catalog.map((watch) => [watch.id, watchSearchDocument(watch).toLowerCase()]));
 const decoded = decodeEmbeddingFile(base64ToBytes(EMBEDDINGS_BASE64), EMBEDDINGS_MANIFEST);
 const embeddingById = new Map(
   EMBEDDINGS_MANIFEST.ids.map((id, index) => [id, decoded.vectors[index]])
@@ -44,7 +55,12 @@ function ndjson(event: SearchStreamEvent): Uint8Array {
 
 function resultReason(watch: Watch, query: string): string {
   const width = watch.specs.caseWidthMm ?? watch.specs.caseDiameterMm;
+  const visualConstraints = extractVisualQueryConstraints(query);
+  const dialEvidence = dialColorEvidence(watch);
   const facts = [
+    visualConstraints.dialColors.length > 0 && dialColorConstraintTier(watch, visualConstraints.dialColors) === 0
+      ? `${dialEvidence.families.find((family) => visualConstraints.dialColors.includes(family))} dial`
+      : null,
     /under|below|budget|affordable|value/i.test(query) && watch.price.retail !== null
       ? `${formatMoney(watch.price.retail)} retail`
       : null,
@@ -77,12 +93,16 @@ export function extractQueryConstraints(query: string): QueryConstraints {
       ? budgetAmount
       : null,
     maxCaseMm: caseMatch ? Number(caseMatch[1]) : null,
-    movementType
+    movementType,
+    dialColors: extractVisualQueryConstraints(query).dialColors
   };
 }
 
 function constraintTier(watch: Watch, constraints: QueryConstraints): 0 | 1 | 2 {
   let unknown = false;
+  const dialTier = dialColorConstraintTier(watch, constraints.dialColors);
+  if (dialTier === 2) return 2;
+  if (dialTier === 1) unknown = true;
   if (constraints.maxRetail !== null) {
     if (watch.price.retail === null) unknown = true;
     else if (watch.price.retail > constraints.maxRetail) return 2;
@@ -97,6 +117,37 @@ function constraintTier(watch: Watch, constraints: QueryConstraints): 0 | 1 | 2 
     else if (watch.specs.movementType !== constraints.movementType) return 2;
   }
   return unknown ? 1 : 0;
+}
+
+type RankedWatch = { watch: Watch; score: number };
+
+function prioritizeConstraintTiers(
+  ranked: RankedWatch[],
+  constraints: QueryConstraints,
+  limit: number,
+  familyLimit: number,
+  brandLimit: number
+): RankedWatch[] {
+  const selected: RankedWatch[] = [];
+  for (const tier of [0, 1, 2] as const) {
+    const remaining = limit - selected.length;
+    if (remaining <= 0) break;
+    const inTier = ranked.filter(({ watch }) => constraintTier(watch, constraints) === tier);
+    selected.push(...diversifyRanked(inTier, Math.min(remaining, inTier.length), familyLimit, brandLimit));
+  }
+  return selected;
+}
+
+function eligibleCandidates(candidates: Watch[], constraints: QueryConstraints): Watch[] {
+  const matches = candidates.filter((watch) => constraintTier(watch, constraints) === 0);
+  if (matches.length >= SEARCH_RESULT_COUNT) return matches;
+  const unknown = candidates.filter((watch) => constraintTier(watch, constraints) === 1);
+  if (matches.length + unknown.length >= SEARCH_RESULT_COUNT) return [...matches, ...unknown];
+  return [
+    ...matches,
+    ...unknown,
+    ...candidates.filter((watch) => constraintTier(watch, constraints) === 2)
+  ];
 }
 
 function immediateStream(mode: SearchMode, results: SearchResult[]): ReadableStream<Uint8Array> {
@@ -144,19 +195,87 @@ async function embedQuery(query: string, env: SearchEnv): Promise<number[]> {
 }
 
 function shortlist(queryEmbedding: number[], query: string): Watch[] {
+  const queryTokens = [...new Set(query.toLowerCase().match(/[a-z0-9]+/g) ?? [])]
+    .filter((token) => token.length > 2);
   const ranked = catalog
     .map((watch) => {
       const embedding = embeddingById.get(watch.id);
       if (!embedding) throw new Error(`Missing catalog embedding: ${watch.id}`);
-      return { watch, score: cosineWithQuantized(queryEmbedding, embedding) };
+      const document = searchDocumentById.get(watch.id) ?? "";
+      const lexicalOverlap = queryTokens.reduce((count, token) => count + (document.includes(token) ? 1 : 0), 0);
+      return { watch, score: cosineWithQuantized(queryEmbedding, embedding) + lexicalOverlap * 0.015 };
     })
     .sort((left, right) => right.score - left.score);
   const constraints = extractQueryConstraints(query);
-  const constrained = [0, 1, 2].flatMap((tier) =>
-    ranked.filter(({ watch }) => constraintTier(watch, constraints) === tier)
-  );
-  return diversifyRanked(constrained, Math.min(SHORTLIST_COUNT, catalog.length), 3, 7)
+  return prioritizeConstraintTiers(ranked, constraints, Math.min(SHORTLIST_COUNT, catalog.length), 3, 7)
     .map(({ watch }) => watch);
+}
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = "";
+  for (let start = 0; start < bytes.length; start += 8192) {
+    binary += String.fromCharCode(...bytes.subarray(start, start + 8192));
+  }
+  return btoa(binary);
+}
+
+async function loadCandidateImages(candidates: Watch[], env: SearchEnv): Promise<CandidateImage[]> {
+  if (!env.ASSETS) return [];
+  return Promise.all(candidates.map(async (watch) => {
+    const request = new Request(`https://timewatcher.local/images/rerank/${encodeURIComponent(watch.id)}.webp`);
+    const response = await env.ASSETS!.fetch(request);
+    if (!response.ok) throw new Error(`Missing rerank image for ${watch.id} (${response.status}).`);
+    return {
+      id: watch.id,
+      mediaType: "image/webp" as const,
+      data: bytesToBase64(new Uint8Array(await response.arrayBuffer()))
+    };
+  }));
+}
+
+async function requestRerank(
+  query: string,
+  candidates: Watch[],
+  images: CandidateImage[],
+  allowedIds: Set<string>,
+  env: SearchEnv,
+  signal?: AbortSignal
+): Promise<Response> {
+  const send = (includedImages: CandidateImage[]) => fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    signal,
+    headers: {
+      "anthropic-version": "2023-06-01",
+      "x-api-key": env.ANTHROPIC_API_KEY!,
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      model: env.ANTHROPIC_MODEL || DEFAULT_RERANK_MODEL,
+      max_tokens: 2048,
+      stream: true,
+      thinking: { type: "adaptive" },
+      output_config: {
+        effort: "medium",
+        format: structuredOutputFormat([...allowedIds])
+      },
+      system: [{
+        type: "text",
+        text: RERANK_SYSTEM_PROMPT,
+        cache_control: { type: "ephemeral", ttl: "1h" }
+      }],
+      messages: [{
+        role: "user",
+        content: rerankUserContent(query, candidates, includedImages)
+      }]
+    })
+  });
+
+  let response = await send(images);
+  if (!response.ok && images.length > 0 && [400, 413, 422].includes(response.status)) {
+    await response.text();
+    response = await send([]);
+  }
+  return response;
 }
 
 async function cacheKey(query: string): Promise<string> {
@@ -177,9 +296,12 @@ export async function createSearchStream(query: string, env: SearchEnv, signal?:
 
   const queryEmbedding = await embedQuery(query, env);
   const candidates = shortlist(queryEmbedding, query);
+  const constraints = extractQueryConstraints(query);
+  const eligible = eligibleCandidates(candidates, constraints);
   if (!env.ANTHROPIC_API_KEY) {
-    const recallWatches = diversifyRanked(
-      candidates.map((watch, index) => ({ watch, score: candidates.length - index })),
+    const recallWatches = prioritizeConstraintTiers(
+      eligible.map((watch, index) => ({ watch, score: eligible.length - index })),
+      constraints,
       SEARCH_RESULT_COUNT,
       1,
       2
@@ -193,56 +315,34 @@ export async function createSearchStream(query: string, env: SearchEnv, signal?:
   return new ReadableStream<Uint8Array>({
     async start(controller) {
       controller.enqueue(ndjson({ type: "meta", mode: "semantic-rerank" }));
-      const emitted: SearchResult[] = [];
-      const allowedIds = new Set(candidates.map((watch) => watch.id));
+      const proposed: SearchResult[] = [];
+      const allowedIds = new Set(eligible.map((watch) => watch.id));
       try {
-        const response = await fetch("https://api.anthropic.com/v1/messages", {
-          method: "POST",
-          signal,
-          headers: {
-            "anthropic-version": "2023-06-01",
-            "x-api-key": env.ANTHROPIC_API_KEY!,
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({
-            model: env.ANTHROPIC_MODEL || DEFAULT_RERANK_MODEL,
-            max_tokens: 2048,
-            stream: true,
-            thinking: { type: "adaptive" },
-            output_config: {
-              effort: "low",
-              format: structuredOutputFormat([...allowedIds])
-            },
-            system: [{
-              type: "text",
-              text: RERANK_SYSTEM_PROMPT,
-              cache_control: { type: "ephemeral", ttl: "1h" }
-            }],
-            messages: [{
-              role: "user",
-              content: `User query (verbatim):\n${query}\n\nCandidates:\n${JSON.stringify(candidates.map(candidatePayload))}`
-            }]
-          })
-        });
+        const images = await loadCandidateImages(eligible, env);
+        const response = await requestRerank(query, eligible, images, allowedIds, env, signal);
         if (!response.ok) throw new Error(`Reranking failed (${response.status}): ${await response.text()}`);
         const parser = new ResultObjectParser();
         for await (const text of anthropicTextDeltas(response)) {
           for (const result of parser.push(text)) {
             const reason = typeof result.reason === "string" ? result.reason.trim() : "";
-            if (emitted.length >= SEARCH_RESULT_COUNT || !allowedIds.has(result.id) || !reason || emitted.some((item) => item.id === result.id)) continue;
-            const validated = { id: result.id, reason };
-            emitted.push(validated);
-            controller.enqueue(ndjson({ type: "result", result: validated }));
+            if (!allowedIds.has(result.id) || !reason || proposed.some((item) => item.id === result.id)) continue;
+            proposed.push({ id: result.id, reason });
           }
         }
-        for (const watch of candidates) {
-          if (emitted.length >= SEARCH_RESULT_COUNT) break;
-          if (emitted.some((result) => result.id === watch.id)) continue;
-          const fallback = { id: watch.id, reason: resultReason(watch, query) };
-          emitted.push(fallback);
-          controller.enqueue(ndjson({ type: "result", result: fallback }));
-        }
-        const finalResults = emitted.slice(0, SEARCH_RESULT_COUNT);
+        const proposedIds = new Set(proposed.map(({ id }) => id));
+        const reranked = [
+          ...proposed.map(({ id }, index) => ({ watch: watchById.get(id)!, score: eligible.length + SEARCH_RESULT_COUNT - index })),
+          ...eligible
+            .filter((watch) => !proposedIds.has(watch.id))
+            .map((watch, index) => ({ watch, score: eligible.length - index }))
+        ];
+        const reasonById = new Map(proposed.map((result) => [result.id, result.reason]));
+        const finalResults = prioritizeConstraintTiers(reranked, constraints, SEARCH_RESULT_COUNT, 1, 2)
+          .map(({ watch }) => ({
+            id: watch.id,
+            reason: reasonById.get(watch.id) ?? resultReason(watch, query)
+          }));
+        finalResults.forEach((result) => controller.enqueue(ndjson({ type: "result", result })));
         if (ttl > 0) putCache(key, { expires: Date.now() + ttl, results: finalResults, mode: "semantic-rerank" });
         controller.enqueue(ndjson({ type: "done" }));
       } catch (error) {

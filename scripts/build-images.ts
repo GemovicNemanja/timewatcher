@@ -20,19 +20,30 @@ const catalogPath = resolve(root, "src/data/catalog.json");
 const sourceDirectory = resolve(root, "assets/source-watches");
 const suppliedImageDirectory = resolve(root, "assets/watch-images");
 const outputDirectory = resolve(root, "public/images/watches");
+const rerankImageDirectory = resolve(root, "public/images/rerank");
 
 const importedCatalog = await readFile(resolve(root, "data/imported-watches.json"), "utf8").catch(() => null);
 if (importedCatalog) {
   const imported = JSON.parse(await readFile(catalogPath, "utf8")) as Watch[];
   const missing = [] as string[];
+  await mkdir(rerankImageDirectory, { recursive: true });
   for (const watch of imported) {
     const bytes = await readFile(resolve(outputDirectory, `${watch.id}.avif`)).catch(() => null);
-    if (!bytes || watch.image.kind !== "photo") missing.push(watch.id);
+    if (!bytes || watch.image.kind !== "photo") {
+      missing.push(watch.id);
+      continue;
+    }
+    const thumbnail = await sharp(bytes)
+      .resize({ width: 280, height: 280, fit: "contain", background: "#ffffff" })
+      .flatten({ background: "#ffffff" })
+      .webp({ quality: 78, effort: 5 })
+      .toBuffer();
+    await writeFile(resolve(rerankImageDirectory, `${watch.id}.webp`), thumbnail);
   }
   if (missing.length > 0) {
     throw new Error(`${missing.length} imported photo(s) are missing. Re-run npm run catalog:import. First missing id: ${missing[0]}`);
   }
-  console.log(`Verified ${imported.length} imported real-photo AVIFs. Image generation is handled by catalog:import.`);
+  console.log(`Verified ${imported.length} imported real-photo AVIFs and built Claude vision thumbnails.`);
   process.exit(0);
 }
 

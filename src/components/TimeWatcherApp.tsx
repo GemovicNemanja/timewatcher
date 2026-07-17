@@ -3,6 +3,12 @@ import catalogJson from "../data/catalog.json";
 import { toggleComparison } from "../lib/compare";
 import { EXAMPLE_QUERIES, MAX_COMPARE, SEARCH_RESULT_COUNT } from "../lib/constants";
 import { diversifyRanked } from "../lib/diversity";
+import {
+  dialColorConstraintTier,
+  dialColorEvidence,
+  extractVisualQueryConstraints,
+  watchSearchDocument
+} from "../lib/visual-search";
 import type { SearchResult, SearchStreamEvent, Watch } from "../types";
 import { CompareDialog } from "./CompareDialog";
 import { DetailDialog } from "./DetailDialog";
@@ -12,6 +18,7 @@ const catalog = catalogJson as Watch[];
 const initialWatches = catalog.filter((watch, index, watches) =>
   watches.findIndex((candidate) => candidate.brand === watch.brand) === index
 ).slice(0, SEARCH_RESULT_COUNT);
+const searchDocumentById = new Map(catalog.map((watch) => [watch.id, watchSearchDocument(watch).toLowerCase()]));
 
 function tokenise(value: string): string[] {
   return value.toLowerCase().match(/[a-z0-9]+/g) ?? [];
@@ -22,9 +29,10 @@ function localDemoSearch(query: string): SearchResult[] {
   const priceMatch = query.match(/(?:under|below|less than|max(?:imum)?|up to)\s*\$?([\d,]+)/i);
   const maxPrice = priceMatch ? Number(priceMatch[1].replaceAll(",", "")) : null;
   const negatedFlashy = /(?:nothing|not|isn't|isnt|avoid)\s+(?:too\s+)?flashy/i.test(query);
+  const visualConstraints = extractVisualQueryConstraints(query);
   const ranked = catalog
     .map((watch, index) => {
-      const haystack = `${watch.brand} ${watch.model} ${watch.styleDescription}`.toLowerCase();
+      const haystack = searchDocumentById.get(watch.id) ?? "";
       const overlap = queryTokens.reduce((score, token) => score + (haystack.includes(token) ? 1 : 0), 0);
       let score = overlap * 4 - index * 0.01;
       if (maxPrice !== null) score += watch.price.retail !== null && watch.price.retail <= maxPrice ? 12 : -30;
@@ -32,10 +40,25 @@ function localDemoSearch(query: string): SearchResult[] {
       return { watch, score };
     })
     .sort((a, b) => b.score - a.score);
-  return diversifyRanked(ranked, SEARCH_RESULT_COUNT, 2, 2)
+  const exactMatchCount = ranked.filter(({ watch }) =>
+    dialColorConstraintTier(watch, visualConstraints.dialColors) === 0
+  ).length;
+  const selected: typeof ranked = [];
+  const tiers = exactMatchCount >= SEARCH_RESULT_COUNT ? [0] : [0, 1, 2];
+  for (const tier of tiers) {
+    const remaining = SEARCH_RESULT_COUNT - selected.length;
+    if (remaining <= 0) break;
+    const inTier = ranked.filter(({ watch }) =>
+      dialColorConstraintTier(watch, visualConstraints.dialColors) === tier
+    );
+    selected.push(...diversifyRanked(inTier, Math.min(remaining, inTier.length), 2, 2));
+  }
+  return selected
     .map(({ watch }) => ({
       id: watch.id,
-      reason: `A close catalog match for “${query.length > 72 ? `${query.slice(0, 69)}…` : query}”, based on its style, fit, and practical specs.`
+      reason: visualConstraints.dialColors.length > 0 && dialColorEvidence(watch).families.length > 0
+        ? `${dialColorEvidence(watch).families.join("/")} dial and its broader design make this a close catalog match.`
+        : `A close catalog match for “${query.length > 72 ? `${query.slice(0, 69)}…` : query}”, based on its style, fit, and practical specs.`
     }));
 }
 

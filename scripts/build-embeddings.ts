@@ -7,6 +7,7 @@ import {
 } from "../src/lib/embeddings";
 import { DEFAULT_EMBEDDING_MODEL, EMBEDDING_DIMENSIONS } from "../src/lib/constants";
 import { localEmbedding } from "../src/lib/local-embedding";
+import { watchSearchDocument } from "../src/lib/visual-search";
 import type { EmbeddingManifest, Watch } from "../src/types";
 import { loadLocalSecrets, secretValue } from "./shared/secrets";
 
@@ -54,14 +55,14 @@ async function openAIEmbeddings(input: string[]): Promise<number[][]> {
   return all;
 }
 
-const descriptions = catalog.map((watch) => watch.styleDescription);
+const documents = catalog.map(watchSearchDocument);
 const useOpenAI = Boolean(apiKey) && !forceLocal;
 const vectors = useOpenAI
-  ? await openAIEmbeddings(descriptions)
-  : descriptions.map((description) => localEmbedding(description, EMBEDDING_DIMENSIONS));
+  ? await openAIEmbeddings(documents)
+  : documents.map((document) => localEmbedding(document, EMBEDDING_DIMENSIONS));
 const bytes = encodeEmbeddingFile(vectors);
 const contentHash = createHash("sha256")
-  .update(JSON.stringify(catalog.map(({ id, styleDescription }) => ({ id, styleDescription }))))
+  .update(JSON.stringify(catalog.map((watch, index) => ({ id: watch.id, document: documents[index] }))))
   .update(useOpenAI ? model : "local-hash-v1")
   .digest("hex");
 const manifest: EmbeddingManifest = {
