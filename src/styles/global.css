@@ -541,12 +541,21 @@ h1 em {
 }
 
 .detail-modal {
-  width: min(720px, calc(100vw - 32px));
+  width: min(880px, calc(100vw - 32px));
 }
 
 .detail-shell {
+  display: flex;
   max-height: 85vh;
-  padding: 32px;
+  padding: 0;
+}
+
+.detail-content {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  padding: 40px;
 }
 
 .modal-close {
