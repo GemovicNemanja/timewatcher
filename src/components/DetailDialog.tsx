@@ -41,10 +41,10 @@ export function DetailDialog({ watch, selected, onClose, onToggleCompare }: Prop
           <button className="modal-close" type="button" aria-label="Close details" onClick={() => ref.current?.close()}>
             ×
           </button>
-          <div className="detail-hero">
-            <div className="detail-media">
-              <WatchImage watch={watch} loading="eager" />
-            </div>
+          <div className="detail-media">
+            <WatchImage watch={watch} loading="eager" />
+          </div>
+          <div className="detail-content">
             <div className="detail-heading">
               <span className="watch-brand">{watch.brand}</span>
               <h2 id="detail-title">{watch.model}</h2>
