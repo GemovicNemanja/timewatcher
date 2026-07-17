@@ -823,7 +823,7 @@ h1 em {
 }
 
 .compare-modal {
-  width: min(1100px, 94vw);
+  width: min(1240px, calc(100vw - 24px));
 }
 
 .compare-shell {
