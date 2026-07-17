@@ -203,10 +203,7 @@ export default function TimeWatcherApp() {
 
       <section className="results-section" aria-labelledby="results-title" aria-busy={loading}>
         <div className="results-heading">
-          <div>
-            <p className="eyebrow">Four answers</p>
-            <h2 id="results-title">{activeQuery ? `Matches for “${activeQuery}”` : "A few good places to start"}</h2>
-          </div>
+          <h2 id="results-title">{activeQuery ? `Matches for “${activeQuery}”` : "A few good places to start"}</h2>
           {activeQuery ? <span className="search-mode">{searchMode === "semantic-rerank" ? "Semantically ranked" : searchMode === "recall-only" ? "Embedding matches" : "Local preview"}</span> : null}
         </div>
         {error ? <p className="search-error" role="status">{error}</p> : null}
