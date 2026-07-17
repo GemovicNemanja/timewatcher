@@ -535,7 +535,7 @@ h1 em {
 .modal-shell {
   position: relative;
   overflow: auto;
-  border-radius: 8px;
+  border-radius: 0;
   background: var(--bg);
   overscroll-behavior: contain;
 }
