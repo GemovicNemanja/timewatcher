@@ -272,10 +272,10 @@ h1 em {
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--accent);
+  color: var(--text-2);
   text-decoration: underline;
-  text-decoration-color: transparent;
-  text-underline-offset: 3px;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 4px;
 }
 
 .example-queries button:hover {
