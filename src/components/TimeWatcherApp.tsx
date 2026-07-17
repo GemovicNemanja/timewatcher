@@ -171,7 +171,7 @@ export default function TimeWatcherApp() {
     <>
       <section className="search-section" aria-labelledby="page-title">
         <p className="eyebrow">Semantic watch finder</p>
-        <h1 id="page-title">Find a watch that feels right.</h1>
+        <h1 id="page-title">Find a watch that <em>feels right.</em></h1>
         <p className="hero-copy">Describe the mood, occasion, fit, or budget. You’ll get four considered answers.</p>
         <form
           id="search"
