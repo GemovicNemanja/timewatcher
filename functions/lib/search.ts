@@ -2,6 +2,7 @@ import catalogJson from "../../src/data/catalog.json";
 import { EMBEDDINGS_BASE64, EMBEDDINGS_MANIFEST } from "../../src/data/embeddings.generated";
 import { DEFAULT_EMBEDDING_MODEL, DEFAULT_RERANK_MODEL, SEARCH_RESULT_COUNT, SHORTLIST_COUNT } from "../../src/lib/constants";
 import { base64ToBytes, cosineWithQuantized, decodeEmbeddingFile } from "../../src/lib/embeddings";
+import { diversifyRanked } from "../../src/lib/diversity";
 import { formatMoney, formatMovement } from "../../src/lib/format";
 import { localEmbedding } from "../../src/lib/local-embedding";
 import type { SearchResult, SearchStreamEvent, Watch } from "../../src/types";
@@ -23,6 +24,11 @@ export type SearchEnv = {
 
 type SearchMode = "semantic-rerank" | "recall-only" | "local-demo";
 type CachedSearch = { expires: number; results: SearchResult[]; mode: SearchMode };
+type QueryConstraints = {
+  maxRetail: number | null;
+  maxCaseMm: number | null;
+  movementType: Watch["specs"]["movementType"] | null;
+};
 
 const catalog = catalogJson as Watch[];
 const watchById = new Map(catalog.map((watch) => [watch.id, watch]));
@@ -38,10 +44,59 @@ function ndjson(event: SearchStreamEvent): Uint8Array {
 
 function resultReason(watch: Watch, query: string): string {
   const width = watch.specs.caseWidthMm ?? watch.specs.caseDiameterMm;
-  const budget = /under|below|budget|affordable|value/i.test(query) && watch.price.retail !== null
-    ? `${formatMoney(watch.price.retail)} retail, `
-    : "";
-  return `${budget}${width}mm, ${formatMovement(watch.specs.movementType).toLowerCase()}, and ${watch.specs.waterResistanceM}m water resistance make it a strong style-and-fit match.`;
+  const facts = [
+    /under|below|budget|affordable|value/i.test(query) && watch.price.retail !== null
+      ? `${formatMoney(watch.price.retail)} retail`
+      : null,
+    width === null ? null : `${width}mm case`,
+    watch.specs.movementType === "unknown" ? null : `${formatMovement(watch.specs.movementType).toLowerCase()} movement`,
+    watch.specs.waterResistanceM === null ? null : `${watch.specs.waterResistanceM}m water resistance`
+  ].filter((value): value is string => Boolean(value));
+  const evidence = facts.length > 0 ? facts.join(", ") : `${watch.brand} ${watch.model}`;
+  return `${evidence} ${facts.length === 1 ? "makes" : "make"} it a strong style-and-fit match.`;
+}
+
+export function extractQueryConstraints(query: string): QueryConstraints {
+  const budgetMatch = query.match(/(?:under|below|less than|max(?:imum)?|up to|no more than)\s*((?:usd\s*)?\$?\s*[\d,]+(?:\.\d+)?(?:\s*(?:usd|dollars?))?)/i);
+  const rawBudget = budgetMatch?.[1] ?? "";
+  const budgetAmount = Number(rawBudget.replace(/[^\d.]/g, ""));
+  const looksLikeCaseSize = budgetMatch
+    ? /mm\b/i.test(query.slice((budgetMatch.index ?? 0) + budgetMatch[0].length, (budgetMatch.index ?? 0) + budgetMatch[0].length + 5))
+    : false;
+  const hasCurrencyContext = /\$|usd|dollars?|price|budget/i.test(`${rawBudget} ${query}`);
+  const caseMatch = query.match(/(?:under|below|smaller than|max(?:imum)?|up to|no more than)\s*(\d+(?:\.\d+)?)\s*mm\b/i);
+  const negatedAutomatic = /(?:does(?:n't| not) need|not necessarily|no need for)\s+(?:to be\s+)?automatic/i.test(query);
+  let movementType: QueryConstraints["movementType"] = null;
+  if (/\bspring\s*drive\b/i.test(query)) movementType = "spring-drive";
+  else if (/\bhand[- ]?wound|manual wind/i.test(query)) movementType = "hand-wound";
+  else if (/\bquartz\b/i.test(query)) movementType = "quartz";
+  else if (/\bsolar\b/i.test(query)) movementType = "solar";
+  else if (/\bautomatic\b/i.test(query) && !negatedAutomatic) movementType = "automatic";
+  return {
+    maxRetail: budgetMatch && hasCurrencyContext && !looksLikeCaseSize && Number.isFinite(budgetAmount)
+      ? budgetAmount
+      : null,
+    maxCaseMm: caseMatch ? Number(caseMatch[1]) : null,
+    movementType
+  };
+}
+
+function constraintTier(watch: Watch, constraints: QueryConstraints): 0 | 1 | 2 {
+  let unknown = false;
+  if (constraints.maxRetail !== null) {
+    if (watch.price.retail === null) unknown = true;
+    else if (watch.price.retail > constraints.maxRetail) return 2;
+  }
+  if (constraints.maxCaseMm !== null) {
+    const width = watch.specs.caseWidthMm ?? watch.specs.caseDiameterMm;
+    if (width === null) unknown = true;
+    else if (width >= constraints.maxCaseMm) return 2;
+  }
+  if (constraints.movementType !== null) {
+    if (watch.specs.movementType === "unknown") unknown = true;
+    else if (watch.specs.movementType !== constraints.movementType) return 2;
+  }
+  return unknown ? 1 : 0;
 }
 
 function immediateStream(mode: SearchMode, results: SearchResult[]): ReadableStream<Uint8Array> {
@@ -88,15 +143,19 @@ async function embedQuery(query: string, env: SearchEnv): Promise<number[]> {
   return vector;
 }
 
-function shortlist(queryEmbedding: number[]): Watch[] {
-  return catalog
+function shortlist(queryEmbedding: number[], query: string): Watch[] {
+  const ranked = catalog
     .map((watch) => {
       const embedding = embeddingById.get(watch.id);
       if (!embedding) throw new Error(`Missing catalog embedding: ${watch.id}`);
       return { watch, score: cosineWithQuantized(queryEmbedding, embedding) };
     })
-    .sort((left, right) => right.score - left.score)
-    .slice(0, Math.min(SHORTLIST_COUNT, catalog.length))
+    .sort((left, right) => right.score - left.score);
+  const constraints = extractQueryConstraints(query);
+  const constrained = [0, 1, 2].flatMap((tier) =>
+    ranked.filter(({ watch }) => constraintTier(watch, constraints) === tier)
+  );
+  return diversifyRanked(constrained, Math.min(SHORTLIST_COUNT, catalog.length), 3, 7)
     .map(({ watch }) => watch);
 }
 
@@ -117,9 +176,15 @@ export async function createSearchStream(query: string, env: SearchEnv, signal?:
   if (cached && cached.expires > Date.now()) return immediateStream(cached.mode, cached.results);
 
   const queryEmbedding = await embedQuery(query, env);
-  const candidates = shortlist(queryEmbedding);
+  const candidates = shortlist(queryEmbedding, query);
   if (!env.ANTHROPIC_API_KEY) {
-    const results = candidates.slice(0, SEARCH_RESULT_COUNT).map((watch) => ({ id: watch.id, reason: resultReason(watch, query) }));
+    const recallWatches = diversifyRanked(
+      candidates.map((watch, index) => ({ watch, score: candidates.length - index })),
+      SEARCH_RESULT_COUNT,
+      1,
+      2
+    ).map(({ watch }) => watch);
+    const results = recallWatches.map((watch) => ({ id: watch.id, reason: resultReason(watch, query) }));
     putCache(key, { expires: Date.now() + 60_000, results, mode: "recall-only" });
     return immediateStream("recall-only", results);
   }
@@ -164,7 +229,7 @@ export async function createSearchStream(query: string, env: SearchEnv, signal?:
         for await (const text of anthropicTextDeltas(response)) {
           for (const result of parser.push(text)) {
             const reason = typeof result.reason === "string" ? result.reason.trim() : "";
-            if (!allowedIds.has(result.id) || !reason || emitted.some((item) => item.id === result.id)) continue;
+            if (emitted.length >= SEARCH_RESULT_COUNT || !allowedIds.has(result.id) || !reason || emitted.some((item) => item.id === result.id)) continue;
             const validated = { id: result.id, reason };
             emitted.push(validated);
             controller.enqueue(ndjson({ type: "result", result: validated }));

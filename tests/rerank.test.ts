@@ -10,11 +10,11 @@ describe("streamed structured reranking", () => {
     ]);
   });
 
-  it("constrains IDs and the result count in the API schema", () => {
+  it("constrains IDs and uses Anthropic-compatible array bounds", () => {
     const format = structuredOutputFormat(["a", "b", "c", "d"]);
     const results = format.schema.properties.results;
-    expect(results.minItems).toBe(4);
-    expect(results.maxItems).toBe(4);
+    expect(results.minItems).toBe(1);
+    expect("maxItems" in results).toBe(false);
     expect(results.items.properties.id.enum).toEqual(["a", "b", "c", "d"]);
   });
 });

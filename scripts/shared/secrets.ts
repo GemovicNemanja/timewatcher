@@ -5,7 +5,6 @@ import { parse } from "yaml";
 export type LocalSecrets = {
   anthropic?: { api_key?: string; model?: string };
   openai?: { api_key?: string; embedding_model?: string };
-  cloudflare?: { account_id?: string; api_token?: string };
   search?: { cache_ttl_seconds?: number };
 };
 

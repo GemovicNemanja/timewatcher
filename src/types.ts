@@ -3,9 +3,22 @@ export type MovementType =
   | "hand-wound"
   | "quartz"
   | "solar"
-  | "spring-drive";
+  | "spring-drive"
+  | "unknown";
 
-export type CrystalType = "sapphire" | "mineral" | "acrylic";
+export type CrystalType = "sapphire" | "mineral" | "acrylic" | "unknown";
+
+export type WatchProvenance = {
+  catalogUrl: string;
+  manufacturerUrl: string | null;
+  imageSourceUrl: string;
+  retrievedAt: string;
+};
+
+export type SourceSpecification = {
+  name: string;
+  value: string;
+};
 
 export type Watch = {
   id: string;
@@ -14,29 +27,32 @@ export type Watch = {
   reference: string;
   price: {
     retail: number | null;
-    preOwnedLow: number;
-    preOwnedHigh: number;
+    preOwnedLow: number | null;
+    preOwnedHigh: number | null;
   };
   image: {
     src: string;
     w: number;
     h: number;
     alphaBbox: [number, number, number, number];
+    kind?: "photo" | "illustration";
   };
   specs: {
-    caseDiameterMm: number;
-    caseWidthMm?: number;
-    thicknessMm: number;
-    lugToLugMm: number;
-    lugWidthMm: number;
+    caseDiameterMm: number | null;
+    caseWidthMm?: number | null;
+    thicknessMm: number | null;
+    lugToLugMm: number | null;
+    lugWidthMm: number | null;
     movementType: MovementType;
-    caliber: string;
+    caliber: string | null;
     powerReserveH: number | null;
-    waterResistanceM: number;
+    waterResistanceM: number | null;
     crystal: CrystalType;
-    yearReleased: number;
+    yearReleased: number | null;
   };
   styleDescription: string;
+  sourceSpecifications?: SourceSpecification[];
+  provenance?: WatchProvenance;
 };
 
 export type SearchResult = {

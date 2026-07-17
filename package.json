@@ -10,11 +10,15 @@
     "check": "ASTRO_TELEMETRY_DISABLED=1 astro check && tsc -p tsconfig.functions.json --noEmit && tsc -p tsconfig.scripts.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "search:smoke": "node --import tsx scripts/smoke-search.ts",
+    "catalog:import": "node --import tsx scripts/import-demo-catalog.ts",
     "catalog:compile": "node --import tsx scripts/compile-catalog.ts",
+    "catalog:validate": "node --import tsx scripts/validate-catalog.ts",
+    "catalog:prune-images": "node --import tsx scripts/prune-catalog-images.ts",
     "catalog:images": "node --import tsx scripts/build-images.ts",
     "catalog:descriptions": "node --import tsx scripts/catalog-descriptions.ts",
     "catalog:embeddings": "node --import tsx scripts/build-embeddings.ts",
-    "catalog:build": "npm run catalog:compile && npm run catalog:images && npm run catalog:embeddings",
+    "catalog:build": "npm run catalog:compile && npm run catalog:images && npm run catalog:validate && npm run catalog:embeddings",
     "secrets:sync": "node --import tsx scripts/sync-secrets.ts"
   },
   "dependencies": {

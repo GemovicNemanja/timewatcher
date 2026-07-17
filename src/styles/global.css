@@ -655,6 +655,27 @@ h1 {
   text-align: right;
 }
 
+.source-specs {
+  margin-top: 28px;
+}
+
+.source-specs .detail-spec-row {
+  grid-template-columns: minmax(120px, 0.8fr) minmax(0, 1.7fr);
+}
+
+.source-note {
+  margin: 13px 0 0;
+  color: var(--text-3);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.source-note a {
+  color: var(--text-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .primary-button {
   min-height: 42px;
   padding: 10px 16px;

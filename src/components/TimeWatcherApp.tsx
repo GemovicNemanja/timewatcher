@@ -2,12 +2,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import catalogJson from "../data/catalog.json";
 import { toggleComparison } from "../lib/compare";
 import { EXAMPLE_QUERIES, MAX_COMPARE, SEARCH_RESULT_COUNT } from "../lib/constants";
+import { diversifyRanked } from "../lib/diversity";
 import type { SearchResult, SearchStreamEvent, Watch } from "../types";
 import { CompareDialog } from "./CompareDialog";
 import { DetailDialog } from "./DetailDialog";
 import { WatchCard } from "./WatchCard";
 
 const catalog = catalogJson as Watch[];
+const initialWatches = catalog.filter((watch, index, watches) =>
+  watches.findIndex((candidate) => candidate.brand === watch.brand) === index
+).slice(0, SEARCH_RESULT_COUNT);
 
 function tokenise(value: string): string[] {
   return value.toLowerCase().match(/[a-z0-9]+/g) ?? [];
@@ -18,7 +22,7 @@ function localDemoSearch(query: string): SearchResult[] {
   const priceMatch = query.match(/(?:under|below|less than|max(?:imum)?|up to)\s*\$?([\d,]+)/i);
   const maxPrice = priceMatch ? Number(priceMatch[1].replaceAll(",", "")) : null;
   const negatedFlashy = /(?:nothing|not|isn't|isnt|avoid)\s+(?:too\s+)?flashy/i.test(query);
-  return catalog
+  const ranked = catalog
     .map((watch, index) => {
       const haystack = `${watch.brand} ${watch.model} ${watch.styleDescription}`.toLowerCase();
       const overlap = queryTokens.reduce((score, token) => score + (haystack.includes(token) ? 1 : 0), 0);
@@ -27,8 +31,8 @@ function localDemoSearch(query: string): SearchResult[] {
       if (negatedFlashy && /(flashy|conspicuous|status signal|announce itself)/.test(watch.styleDescription.toLowerCase())) score -= 15;
       return { watch, score };
     })
-    .sort((a, b) => b.score - a.score)
-    .slice(0, SEARCH_RESULT_COUNT)
+    .sort((a, b) => b.score - a.score);
+  return diversifyRanked(ranked, SEARCH_RESULT_COUNT, 2, 2)
     .map(({ watch }) => ({
       id: watch.id,
       reason: `A close catalog match for “${query.length > 72 ? `${query.slice(0, 69)}…` : query}”, based on its style, fit, and practical specs.`
@@ -71,7 +75,7 @@ export default function TimeWatcherApp() {
   const [input, setInput] = useState("");
   const [activeQuery, setActiveQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>(
-    catalog.slice(0, SEARCH_RESULT_COUNT).map((watch) => ({ id: watch.id, reason: "" }))
+    initialWatches.map((watch) => ({ id: watch.id, reason: "" }))
   );
   const [searchMode, setSearchMode] = useState("curated");
   const [loading, setLoading] = useState(false);

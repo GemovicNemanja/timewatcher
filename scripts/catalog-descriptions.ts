@@ -2,7 +2,6 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import sharp from "sharp";
-import { parse } from "yaml";
 import { DEFAULT_RERANK_MODEL } from "../src/lib/constants";
 import type { Watch } from "../src/types";
 import { loadLocalSecrets, secretValue } from "./shared/secrets";
@@ -20,7 +19,9 @@ const cacheDirectory = resolve(root, "catalog-cache");
 const descriptionCache = resolve(cacheDirectory, "descriptions");
 const latestBatchPath = resolve(cacheDirectory, "batches/latest.json");
 const generatedPath = resolve(root, "data/generated-descriptions.json");
-const source = parse(await readFile(resolve(root, "data/watches.yaml"), "utf8")) as { watches: SourceWatch[] };
+const source = {
+  watches: JSON.parse(await readFile(resolve(root, "src/data/catalog.json"), "utf8")) as SourceWatch[]
+};
 const secrets = await loadLocalSecrets(root);
 const apiKey = process.env.ANTHROPIC_API_KEY ?? secretValue(secrets.anthropic?.api_key);
 const model = process.env.ANTHROPIC_MODEL ?? secretValue(secrets.anthropic?.model) ?? DEFAULT_RERANK_MODEL;
@@ -53,6 +54,7 @@ async function contentHash(watch: SourceWatch, image: Buffer): Promise<string> {
   return createHash("sha256")
     .update(image)
     .update(JSON.stringify(watch.specs))
+    .update(JSON.stringify(watch.sourceSpecifications ?? []))
     .digest("hex");
 }
 
@@ -76,7 +78,7 @@ async function submit() {
       generated[watch.id] = cached.description;
       continue;
     }
-    const png = await sharp(avif).png().toBuffer();
+    const webp = await sharp(avif).webp({ quality: 82, effort: 5 }).toBuffer();
     const customId = `w_${hash.slice(0, 32)}`;
     requests.push({ customId, watchId: watch.id, contentHash: hash });
     payloadRequests.push({
@@ -90,8 +92,8 @@ async function submit() {
         messages: [{
           role: "user",
           content: [
-            { type: "image", source: { type: "base64", media_type: "image/png", data: png.toString("base64") } },
-            { type: "text", text: `Watch data:\n${JSON.stringify({ brand: watch.brand, model: watch.model, reference: watch.reference, specs: watch.specs })}\n\nDescribe this watch for the search index.` }
+            { type: "image", source: { type: "base64", media_type: "image/webp", data: webp.toString("base64") } },
+            { type: "text", text: `Watch data:\n${JSON.stringify({ brand: watch.brand, model: watch.model, reference: watch.reference, specs: watch.specs, sourceSpecifications: watch.sourceSpecifications })}\n\nDescribe this watch for the search index.` }
           ]
         }]
       }

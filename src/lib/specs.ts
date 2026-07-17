@@ -25,15 +25,17 @@ export const specDefinitions: SpecDef[] = [
     label: "Case diameter",
     shortLabel: "Case",
     info: "How wide the watch face is, not counting the crown. Most wrists suit 36–42mm — but lug-to-lug matters more.",
-    format: (watch) =>
-      `${formatNumber(watch.specs.caseWidthMm ?? watch.specs.caseDiameterMm)}mm`
+    format: (watch) => {
+      const value = watch.specs.caseWidthMm ?? watch.specs.caseDiameterMm;
+      return value === null ? "—" : `${formatNumber(value)}mm`;
+    }
   },
   {
     key: "thickness",
     label: "Thickness",
     shortLabel: "Thickness",
     info: "How far it stands off your wrist. Under 12mm slides under a shirt cuff. Over 14mm won't.",
-    format: (watch) => `${formatNumber(watch.specs.thicknessMm)}mm`,
+    format: (watch) => watch.specs.thicknessMm === null ? "—" : `${formatNumber(watch.specs.thicknessMm)}mm`,
     compare: {
       value: (watch) => watch.specs.thicknessMm,
       direction: "lower",
@@ -45,13 +47,16 @@ export const specDefinitions: SpecDef[] = [
     label: "Lug-to-lug",
     shortLabel: "Lug-to-lug",
     info: "Tip-to-tip length, and the number that actually decides fit. If it's wider than your wrist, the watch overhangs and looks wrong no matter what the diameter says.",
-    format: (watch) => `${formatNumber(watch.specs.lugToLugMm)}mm`
+    format: (watch) => watch.specs.lugToLugMm === null ? "—" : `${formatNumber(watch.specs.lugToLugMm)}mm`
   },
   {
     key: "movement",
     label: "Movement",
     info: "Automatic winds itself from your wrist's motion. Hand-wound needs winding daily. Quartz runs on a battery — and is more accurate than either.",
-    format: (watch) => `${formatMovement(watch.specs.movementType)} · ${watch.specs.caliber}`
+    format: (watch) => {
+      const movement = formatMovement(watch.specs.movementType);
+      return watch.specs.caliber ? `${movement} · ${watch.specs.caliber}` : movement === "Unknown" ? "—" : movement;
+    }
   },
   {
     key: "powerReserve",
@@ -71,7 +76,7 @@ export const specDefinitions: SpecDef[] = [
     label: "Water resistance",
     shortLabel: "Water",
     info: "Not literal depth. 30m: splashes. 50m: swimming. 100m: snorkelling. 200m+: actual diving.",
-    format: (watch) => `${watch.specs.waterResistanceM}m`,
+    format: (watch) => watch.specs.waterResistanceM === null ? "—" : `${watch.specs.waterResistanceM}m`,
     compare: {
       value: (watch) => watch.specs.waterResistanceM,
       direction: "higher",
@@ -82,14 +87,15 @@ export const specDefinitions: SpecDef[] = [
     key: "crystal",
     label: "Crystal",
     info: "The glass. Sapphire is nearly unscratchable. Mineral scratches. Acrylic scratches if you look at it, but polishes out with toothpaste.",
-    format: (watch) =>
-      watch.specs.crystal[0].toUpperCase() + watch.specs.crystal.slice(1)
+    format: (watch) => watch.specs.crystal === "unknown"
+      ? "—"
+      : watch.specs.crystal[0].toUpperCase() + watch.specs.crystal.slice(1)
   },
   {
     key: "lugWidth",
     label: "Lug width",
     info: "The strap width — decides which straps fit. 20mm is the most common, so straps are cheap and everywhere.",
-    format: (watch) => `${formatNumber(watch.specs.lugWidthMm)}mm`
+    format: (watch) => watch.specs.lugWidthMm === null ? "—" : `${formatNumber(watch.specs.lugWidthMm)}mm`
   }
 ];
 

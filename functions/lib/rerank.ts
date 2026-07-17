@@ -47,8 +47,9 @@ export function structuredOutputFormat(candidateIds: string[]) {
       properties: {
         results: {
           type: "array",
-          minItems: 4,
-          maxItems: 4,
+          // Anthropic structured outputs only support minItems 0 or 1.
+          // Runtime validation, de-duplication, and cosine backfill still guarantee four.
+          minItems: 1,
           items: {
             type: "object",
             properties: {

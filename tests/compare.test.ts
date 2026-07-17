@@ -22,8 +22,12 @@ describe("comparison rules", () => {
 
   it("badges every tie and never badges price, case size, or movement", () => {
     const reserve = specDefinitions.find((definition) => definition.key === "powerReserve")!;
-    const tied = winnerIds(reserve, [watches[0], watches[1]]);
-    expect(tied).toEqual(new Set([watches[0].id, watches[1].id]));
+    const tiedWatches = watches.slice(0, 2).map((watch) => ({
+      ...watch,
+      specs: { ...watch.specs, powerReserveH: 70 }
+    }));
+    const tied = winnerIds(reserve, tiedWatches);
+    expect(tied).toEqual(new Set(tiedWatches.map((watch) => watch.id)));
     for (const key of ["price", "case", "movement"]) {
       const definition = specDefinitions.find((item) => item.key === key)!;
       expect(definition.compare).toBeUndefined();

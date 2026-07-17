@@ -21,6 +21,21 @@ const sourceDirectory = resolve(root, "assets/source-watches");
 const suppliedImageDirectory = resolve(root, "assets/watch-images");
 const outputDirectory = resolve(root, "public/images/watches");
 
+const importedCatalog = await readFile(resolve(root, "data/imported-watches.json"), "utf8").catch(() => null);
+if (importedCatalog) {
+  const imported = JSON.parse(await readFile(catalogPath, "utf8")) as Watch[];
+  const missing = [] as string[];
+  for (const watch of imported) {
+    const bytes = await readFile(resolve(outputDirectory, `${watch.id}.avif`)).catch(() => null);
+    if (!bytes || watch.image.kind !== "photo") missing.push(watch.id);
+  }
+  if (missing.length > 0) {
+    throw new Error(`${missing.length} imported photo(s) are missing. Re-run npm run catalog:import. First missing id: ${missing[0]}`);
+  }
+  console.log(`Verified ${imported.length} imported real-photo AVIFs. Image generation is handled by catalog:import.`);
+  process.exit(0);
+}
+
 const escapeXml = (value: string) =>
   value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 

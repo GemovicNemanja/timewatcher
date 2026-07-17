@@ -10,7 +10,8 @@ export function formatMoney(value: number | null): string {
   return value === null ? "Price on request" : money.format(value);
 }
 
-export function formatNumber(value: number): string {
+export function formatNumber(value: number | null | undefined): string {
+  if (value === null || value === undefined) return "—";
   return Number.isInteger(value) ? String(value) : value.toFixed(1);
 }
 
@@ -20,12 +21,18 @@ export function formatMovement(type: MovementType): string {
     "hand-wound": "Hand-wound",
     quartz: "Quartz",
     solar: "Solar",
-    "spring-drive": "Spring Drive"
+    "spring-drive": "Spring Drive",
+    unknown: "Unknown"
   };
   return labels[type];
 }
 
 export function watchSummary(watch: Watch): string {
   const width = watch.specs.caseWidthMm ?? watch.specs.caseDiameterMm;
-  return `${formatNumber(width)}mm · ${formatMovement(watch.specs.movementType)} · ${watch.specs.waterResistanceM}m`;
+  const parts = [
+    width === null ? null : `${formatNumber(width)}mm`,
+    watch.specs.movementType === "unknown" ? null : formatMovement(watch.specs.movementType),
+    watch.specs.waterResistanceM === null ? null : `${watch.specs.waterResistanceM}m`
+  ].filter((value): value is string => Boolean(value));
+  return parts.length > 0 ? parts.join(" · ") : watch.reference;
 }
