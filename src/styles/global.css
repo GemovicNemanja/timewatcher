@@ -10,6 +10,8 @@
   --accent-hover: #33302b;
   --accent-wash: #ebe7e0;
   --gold: #a9852d;
+  --image-surface: #ffffff;
+  --image-border: #ddd7cd;
   --scrim: rgb(26 26 26 / 0.5);
   --shadow-modal: 0 24px 48px -12px rgb(26 26 26 / 0.18), 0 0 0 1px rgb(26 26 26 / 0.04);
   --shadow-fab: 0 8px 24px -6px rgb(26 26 26 / 0.24);
@@ -36,7 +38,9 @@ html {
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
+  overflow-x: hidden;
   background: var(--surface-sunken);
   color: var(--text);
   font-size: 15px;
@@ -367,18 +371,19 @@ h1 em {
   position: relative;
   display: block;
   height: 320px;
-  margin-top: 1px;
+  margin-top: 12px;
   overflow: hidden;
-  background: var(--bg);
+  border: 1px solid var(--image-border);
+  background: var(--image-surface);
 }
 
 .watch-image {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: var(--watch-image-width);
-  max-width: none;
-  height: auto;
+  width: calc(100% - 36px);
+  height: calc(100% - 32px);
+  object-fit: contain;
   translate: -50% -50%;
   user-select: none;
 }
@@ -402,11 +407,15 @@ h1 em {
 }
 
 .watch-model {
+  display: -webkit-box;
   margin-top: 5px;
+  overflow: hidden;
   font-family: var(--font-display);
   font-size: 20px;
   font-weight: 400;
   line-height: 1.3;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .watch-summary {
@@ -590,7 +599,13 @@ h1 em {
   align-items: center;
   overflow: hidden;
   border-right: 1px solid var(--border);
-  background: var(--surface-sunken);
+  background: var(--image-surface);
+  box-shadow: inset 0 0 0 1px var(--image-border);
+}
+
+.detail-media .watch-image {
+  width: calc(100% - 48px);
+  height: calc(100% - 48px);
 }
 
 .detail-heading h2 {
@@ -811,7 +826,8 @@ h1 em {
   width: 100%;
   height: 180px;
   overflow: hidden;
-  background: var(--surface-sunken);
+  border: 1px solid var(--image-border);
+  background: var(--image-surface);
 }
 
 .compare-watch strong {
@@ -1065,6 +1081,34 @@ h1 em {
 
 .site-footer p {
   margin: 0;
+}
+
+@media (min-width: 1021px) {
+  .search-section {
+    padding: 28px 24px 24px;
+  }
+
+  .search-section h1 {
+    margin-bottom: 18px;
+  }
+
+  .example-queries {
+    margin-top: 12px;
+  }
+
+  .results-section {
+    padding-bottom: 24px;
+  }
+
+  .card-media,
+  .skeleton-image {
+    height: clamp(205px, calc(100dvh - 580px), 320px);
+  }
+
+  .card-copy {
+    min-height: 140px;
+    padding-block: 14px 16px;
+  }
 }
 
 @media (max-width: 1020px) {
