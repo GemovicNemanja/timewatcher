@@ -583,18 +583,14 @@ h1 em {
   right: 18px;
 }
 
-.detail-hero {
-  display: grid;
-  grid-template-columns: 270px minmax(0, 1fr);
-  gap: 28px;
-  align-items: center;
-  padding-right: 28px;
-}
-
 .detail-media {
   position: relative;
-  height: 290px;
+  display: flex;
+  flex: 0 0 340px;
+  align-items: center;
   overflow: hidden;
+  border-right: 1px solid var(--border);
+  background: var(--surface-sunken);
 }
 
 .detail-heading h2 {
