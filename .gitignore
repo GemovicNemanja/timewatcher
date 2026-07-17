@@ -220,6 +220,8 @@ __marimo__/
 # TimeWatcher (the generic Python template above ignores nested lib/ folders)
 !src/lib/
 !src/lib/**
+!functions/lib/
+!functions/lib/**
 node_modules/
 .astro/
 .wrangler/
